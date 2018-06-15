@@ -1,12 +1,8 @@
 
 import graph.ModelSingleton;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.vocabulary.VCARD;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.log4j.varia.NullAppender;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class Main {
 
@@ -14,19 +10,45 @@ public class Main {
 
         org.apache.log4j.BasicConfigurator.configure(new NullAppender());
 
-        // some definitions
-        String personURL = "http://persons/";
+        // some namespace URLs. Here we can read about the "types"
+        String genderNamespace = "http://genders-ns#";
+        String relationshipNamespace = "http://relationship-ns#";
 
-        // Resources
-        List<Resource> personResources = new ArrayList();
+        // Mapping of namespace to prefix
+        ModelSingleton.getInstance().setNamespacePrefix("g", genderNamespace);
+        ModelSingleton.getInstance().setNamespacePrefix("rel", relationshipNamespace);
 
-        // create the resource and add property
-        personResources.add(ModelSingleton.getInstance().addResource(VCARD.FN, personURL, "Kennet", "Vangsgaard"));
-        personResources.add(ModelSingleton.getInstance().addResource(VCARD.FN, personURL, "Lars", "Hansen"));
+        // create the resources - this case we model genders as "classes" / "subjects"
+        ModelSingleton.getInstance().createUniqueResourceType(genderNamespace, "Male");
+        ModelSingleton.getInstance().createUniqueResourceType(genderNamespace, "Female");
 
-        /**
+        // Create the properties - this case we define exact "predicates"
+        ModelSingleton.getInstance().createUniquePropertyType(relationshipNamespace, "isMarriedTo");
+
+        //Creating the actual "Subjects" to the model. NOTE they have URIs !!!
+        Resource maleInstance = ModelSingleton.getInstance().createResourceNode("http://males/1");
+        Resource femaleInstance = ModelSingleton.getInstance().createResourceNode("http://females/1");
+
+        // Classifications - the actual mapping of Nodes. THIS WILL BECOME THE GRAPH
+        maleInstance.addProperty(RDF.type, ModelSingleton.getInstance().getResourceByClassname("Male"));
+        femaleInstance.addProperty(RDF.type, ModelSingleton.getInstance().getResourceByClassname("Female"));
+        maleInstance.addProperty(ModelSingleton.getInstance().getPropertyByPredicatename("isMarriedTo"), femaleInstance);
+        femaleInstance.addProperty(ModelSingleton.getInstance().getPropertyByPredicatename("isMarriedTo"), maleInstance);
+
+
         // list the statements in the Model
-        StmtIterator iter = ModelSingleton.getInstance().getModel().listStatements();
+        print(ModelSingleton.getInstance().getModel());
+
+
+        //Writes model as a output stream as rdf:XML
+       ModelSingleton.getInstance().getModel().write(System.out);
+
+
+    }
+
+    public static void print(Model m) {
+        // list the statements in the Model
+        StmtIterator iter = m.listStatements();
 
         // print out the predicate, subject and object of each statement
         while (iter.hasNext()) {
@@ -37,25 +59,19 @@ public class Main {
             Property predicate = stmt.getPredicate();   // get the predicate
             RDFNode object = stmt.getObject();      // get the object
 
-            System.out.println("subject: " + subject.toString());
+            System.out.println("subject: " + subject.getNameSpace());
             System.out.println("predicate: " + predicate.toString());
 
             if (object instanceof Resource) {
-                System.out.print("object: as Resource " + object.toString());
+                System.out.println("object: as Resource " + object.toString());
             } else {
                 // object is a literal
                 System.out.println( "object: as Literal " +"'"+ object.toString() +"'");
             }
 
+            System.out.println("-END-");
         }
-
-         */
-
-        ModelSingleton.getInstance().setNamespace("cat", "http://someplace/here#");
-
-        //Writes model as a output stream as rdf:XML
-        ModelSingleton.getInstance().getModel().write(System.out);
-
     }
+
 
 }
