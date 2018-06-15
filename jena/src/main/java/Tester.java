@@ -4,7 +4,7 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.log4j.varia.NullAppender;
 
-public class Main {
+public class Tester {
 
     public static void main(String[] args) {
 
@@ -25,7 +25,7 @@ public class Main {
         // Create the properties - this case we define exact "predicates"
         ModelSingleton.getInstance().createUniquePropertyType(relationshipNamespace, "isMarriedTo");
 
-        //Creating the actual "Subjects" to the model. NOTE they have URIs !!!
+        //Creating the actual "Subjects" to the model. NOTE they have URIs (unique) !!!
         Resource maleInstance = ModelSingleton.getInstance().createResourceNode("http://males/1");
         Resource femaleInstance = ModelSingleton.getInstance().createResourceNode("http://females/1");
 
@@ -33,7 +33,7 @@ public class Main {
         maleInstance.addProperty(RDF.type, ModelSingleton.getInstance().getResourceByClassname("Male"));
         femaleInstance.addProperty(RDF.type, ModelSingleton.getInstance().getResourceByClassname("Female"));
         maleInstance.addProperty(ModelSingleton.getInstance().getPropertyByPredicatename("isMarriedTo"), femaleInstance);
-        femaleInstance.addProperty(ModelSingleton.getInstance().getPropertyByPredicatename("isMarriedTo"), maleInstance);
+        femaleInstance.addProperty(ModelSingleton.getInstance().getPropertyByPredicatename("isMarriedTo"), maleInstance); //Not that the predicate property is not symmetric (bidirectional)...
 
 
         // list the statements in the Model
