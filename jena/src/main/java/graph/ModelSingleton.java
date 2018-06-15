@@ -13,9 +13,6 @@ public class ModelSingleton {
     private Map<String, Resource> resourceTypeMap = new HashMap<String, Resource>();
     private Map<String, Property> propertyTypeMap = new HashMap<String, Property>();
 
-    //Actual nodes
-    private Map<String, Resource> resources = new HashMap<String, Resource>();
-
 
     public static ModelSingleton getInstance() {
         return ourInstance;
@@ -25,9 +22,7 @@ public class ModelSingleton {
     }
 
     public Resource createResourceNode(String URI) {
-        Resource r =  model.createResource(URI);
-        resources.put(URI, r);
-        return r;
+        return  model.createResource(URI);
     }
 
     public Resource getResourceNodeFromURI(String URI) {
