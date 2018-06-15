@@ -2,6 +2,7 @@
 import graph.ModelSingleton;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.VCARD;
 import org.apache.log4j.varia.NullAppender;
 
 public class Tester {
@@ -30,15 +31,15 @@ public class Tester {
         Resource femaleInstance = ModelSingleton.getInstance().createResourceNode("http://females/1");
 
         // Classifications - the actual mapping of Nodes. THIS WILL BECOME THE GRAPH
-        maleInstance.addProperty(RDF.type, ModelSingleton.getInstance().getResourceByClassname("Male"));
-        femaleInstance.addProperty(RDF.type, ModelSingleton.getInstance().getResourceByClassname("Female"));
+        maleInstance.addProperty(RDF.type, ModelSingleton.getInstance().getResourceByClassname("Male")).addProperty(VCARD.FN, "Hans Eriksen");
+        femaleInstance.addProperty(RDF.type, ModelSingleton.getInstance().getResourceByClassname("Female")).addProperty(VCARD.FN, "Grete Rasmussen");
         maleInstance.addProperty(ModelSingleton.getInstance().getPropertyByPredicatename("isMarriedTo"), femaleInstance);
         femaleInstance.addProperty(ModelSingleton.getInstance().getPropertyByPredicatename("isMarriedTo"), maleInstance); //Not that the predicate property is not symmetric (bidirectional)...
 
 
         // list the statements in the Model
-        print(ModelSingleton.getInstance().getModel());
-
+        //print();
+        //printWithProperty("isMarriedTo");
 
         //Writes model as a output stream as rdf:XML
        ModelSingleton.getInstance().getModel().write(System.out);
@@ -46,9 +47,9 @@ public class Tester {
 
     }
 
-    public static void print(Model m) {
+    private static void print() {
         // list the statements in the Model
-        StmtIterator iter = m.listStatements();
+        StmtIterator iter = ModelSingleton.getInstance().getModel().listStatements();
 
         // print out the predicate, subject and object of each statement
         while (iter.hasNext()) {
@@ -70,6 +71,20 @@ public class Tester {
             }
 
             System.out.println("-END-");
+        }
+    }
+
+    private static void printWithProperty(String predicate) {
+        ResIterator iter = ModelSingleton.getInstance().getModel().listSubjectsWithProperty(ModelSingleton.getInstance().getPropertyByPredicatename(predicate));
+        if (iter.hasNext()) {
+            System.out.println("The database contains " + predicate + " for:");
+            while (iter.hasNext()) {
+                System.out.println(" - " + iter.nextResource()
+                        .getProperty(VCARD.FN)
+                        .getString());
+            }
+        } else {
+            System.out.println("No " + predicate + " were found in the database");
         }
     }
 
