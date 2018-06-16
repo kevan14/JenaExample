@@ -1,27 +1,37 @@
 package controllers;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import graph.ModelSingleton;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
+import interfaces.IResourceService;
+import model.CustomResource;
 import resolver.ResourceResolver;
-import services.ResourceService;
 
 
 import com.google.gson.Gson;
+import response.StandardResponse;
 
 
 import static spark.Spark.*;
 
 public class ResourceController {
 
-    public ResourceController(final ResourceService resourceService) {
+    public ResourceController(final IResourceService resourceService) {
 
+        post("/properties", (req, res) -> {
 
-        get("/resources/types", (req, res) -> {
+            res.type("application/json");
+
+            CustomResource cr = new Gson()
+                    .fromJson(req.body(), CustomResource.class);
+
+            if(resourceService.defineNewResource(cr)) {
+                res.status(201);
+                return new Gson().toJson(new StandardResponse("Created", new Gson().toJsonTree(cr)));
+            } else {
+                res.status(406);
+                return new Gson().toJson(new StandardResponse("Exists", new Gson().toJsonTree(cr)));
+            }
+        });
+
+        get("/resources", (req, res) -> {
 
             res.type("application/json");
 

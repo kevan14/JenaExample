@@ -4,34 +4,20 @@ import com.google.gson.JsonElement;
 
 public class StandardResponse {
 
-    private StatusResponse status;
-    private String message;
+    private String status;
     private JsonElement data;
 
-    public StandardResponse(StatusResponse status) {
-        // ...
-    }
-    public StandardResponse(StatusResponse status, String message) {
-        // ...
-    }
-    public StandardResponse(StatusResponse status, JsonElement data) {
-        System.out.println(data);
+    public StandardResponse(String status, JsonElement data) {
+        this.status = status;
+        this.data = data;
     }
 
-    public StatusResponse getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(StatusResponse status) {
+    public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public JsonElement getData() {

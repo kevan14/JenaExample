@@ -44,12 +44,20 @@ public class ModelSingleton {
         return model.getResource(URI);
     }
 
-    public void createUniqueResourceType(String nameSpace, String classname) {
+    public boolean createUniqueResourceType(String nameSpace, String classname) {
+        if(resourceTypeMap.containsKey(classname)) {
+            return false;
+        }
         resourceTypeMap.put(classname, ResourceFactory.createResource(nameSpace + classname));
+        return true;
     }
 
-    public void createUniquePropertyType(String nameSpace, String predicate) {
+    public boolean createUniquePropertyType(String nameSpace, String predicate) {
+        if(propertyTypeMap.containsKey(predicate)) {
+            return false;
+        }
         propertyTypeMap.put(predicate, ResourceFactory.createProperty(nameSpace, predicate));
+        return true;
     }
 
     public Resource getResourceByClassname(String className) {
