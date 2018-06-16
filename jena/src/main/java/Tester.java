@@ -12,8 +12,8 @@ public class Tester {
         org.apache.log4j.BasicConfigurator.configure(new NullAppender());
 
         // some namespace URLs. Here we can read about the "types"
-        String genderNamespace = "http://genders-ns#";
-        String relationshipNamespace = "http://relationship-ns#";
+        String genderNamespace = "http://domain.com/genders-ns#";
+        String relationshipNamespace = "http://domain.com/relationship-ns#";
 
         // Mapping of namespace to prefix
         ModelSingleton.getInstance().setNamespacePrefix("g", genderNamespace);
@@ -27,8 +27,8 @@ public class Tester {
         ModelSingleton.getInstance().createUniquePropertyType(relationshipNamespace, "isMarriedTo");
 
         //Creating the actual "Subjects" to the model. NOTE they have URIs (unique) !!!
-        Resource maleInstance = ModelSingleton.getInstance().createResourceNode("http://males/1");
-        Resource femaleInstance = ModelSingleton.getInstance().createResourceNode("http://females/1");
+        Resource maleInstance = ModelSingleton.getInstance().createResourceNode("http://domain.com/males/1");
+        Resource femaleInstance = ModelSingleton.getInstance().createResourceNode("http://domain.com/females/1");
 
         // Classifications - the actual mapping of Nodes. THIS WILL BECOME THE GRAPH
         maleInstance.addProperty(RDF.type, ModelSingleton.getInstance().getResourceByClassname("Male")).addProperty(VCARD.FN, "Hans Eriksen");
