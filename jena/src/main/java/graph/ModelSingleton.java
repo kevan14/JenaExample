@@ -2,7 +2,8 @@ package graph;
 
 import org.apache.jena.rdf.model.*;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class ModelSingleton {
@@ -10,8 +11,8 @@ public class ModelSingleton {
     private Model model = ModelFactory.createDefaultModel();
 
     //Types
-    private Map<String, Resource> resourceTypeMap = new HashMap<String, Resource>();
-    private Map<String, Property> propertyTypeMap = new HashMap<String, Property>();
+    private Map<String, Resource> resourceTypeMap = new Hashtable<>();
+    private Map<String, Property> propertyTypeMap = new Hashtable<>();
 
 
     public static ModelSingleton getInstance() {
@@ -19,6 +20,17 @@ public class ModelSingleton {
     }
 
     private ModelSingleton() {
+        //Just test data...
+        createUniquePropertyType("http://namespaces.com/relationship#", "isFriendTo");
+        createUniqueResourceType("http://namespaces.com/genders#", "Male");
+    }
+
+    public Collection<Property> getDefinedPropertyTypes() {
+        return propertyTypeMap.values();
+    }
+
+    public Collection<Resource> getDefinedResourceTypes() {
+        return resourceTypeMap.values();
     }
 
     public Resource createResourceNode(String URI) {
