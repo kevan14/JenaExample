@@ -1,6 +1,7 @@
 package graph;
 
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Collection;
 import java.util.Hashtable;
@@ -20,9 +21,11 @@ public class ModelSingleton {
     }
 
     private ModelSingleton() {
-        //Just test data...
+        //Just test data for API...
         createUniquePropertyType("http://namespaces.com/relationship#", "isFriendTo");
+        createUniquePropertyType("http://namespaces.com/relationship#", "isMarriedTo");
         createUniqueResourceType("http://namespaces.com/genders#", "Male");
+        createUniqueResourceType("http://namespaces.com/genders#", "Female");
     }
 
     public Collection<Property> getDefinedPropertyTypes() {
